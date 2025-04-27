@@ -9,10 +9,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 @Data
 @AllArgsConstructor
@@ -29,21 +30,20 @@ public class User implements UserDetails {
     @Check(constraints = "length(username)>=4 and length(username)<=20")
     private String username;
     @NotEmpty(message = "password cannot be empty")
-    @Pattern(regexp = "^([a-z]|[A-Z]|[0-9])+$")
-    @Size(min = 8,max = 16,message = "password should be 8 character length to 16")
-    @Column(columnDefinition = "varchar(16) not null")
-    @Check(constraints = "length(password)>=8 and length(password)<=16")
+//    @Pattern(regexp = "^([a-z]|[A-Z]|[0-9])+$")
+//    @Size(min = 8,max = 16,message = "password should be 8 character length to 16")
+    @Column(columnDefinition = "varchar(255) not null")
+//    @Check(constraints = "length(password)>=8 and length(password)<=16")
     private String password;
-    @NotEmpty(message = "role cannot be empty")
-    @Pattern(regexp = "^(admin|user)$")
+    @Pattern(regexp = "^(ADMIN|USER)$")
     @Column(columnDefinition = "varchar(5) not null")
-    @Check(constraints = "role='admin' or role='user'")
+    @Check(constraints = "role='ADMIN' or role='USER'")
     private String role;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return Collections.singleton(new SimpleGrantedAuthority(this.role));
     }
 
     @Override

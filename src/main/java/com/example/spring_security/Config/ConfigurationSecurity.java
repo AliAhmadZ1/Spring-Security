@@ -4,6 +4,7 @@ import com.example.spring_security.Service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,17 +31,27 @@ public class ConfigurationSecurity {
     }
 
 
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf().disable()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/register","/api/v1/auth/login").permitAll() // .requestMatchers("/api/v1/auth/**").hasAnyAuthority("USER","ADMIN")
+                .requestMatchers(HttpMethod.POST,"/api/v1/auth/register").permitAll() // .requestMatchers("/api/v1/auth/**").hasAnyAuthority("USER","ADMIN")
+                .anyRequest().authenticated()
+                .and()
+                .logout().logoutUrl("/api/v1/auth/logout")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and()
+                .httpBasic();
+
+        return httpSecurity.build();
 
         // requestMatcher for all users like (user / admin / customer...etc)
-        // without duplicate
+        // without duplication
 
 
     }
