@@ -71,7 +71,6 @@ public class AuthService {
 
         authRepository.delete(user);
     }
-
-
+    
 
 }

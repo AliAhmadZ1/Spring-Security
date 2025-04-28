@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -39,6 +40,9 @@ public class User implements UserDetails {
     @Column(columnDefinition = "varchar(5) not null")
     @Check(constraints = "role='ADMIN' or role='USER'")
     private String role;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Todo> todos;
 
 
     @Override
