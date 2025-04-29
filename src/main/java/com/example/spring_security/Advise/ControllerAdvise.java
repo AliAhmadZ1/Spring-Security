@@ -5,6 +5,7 @@ import com.example.spring_security.Api.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -68,6 +69,12 @@ public class ControllerAdvise {
 
     @ExceptionHandler(value = NoResourceFoundException.class)
     public ResponseEntity NoResourceFoundException(NoResourceFoundException noResourceFoundException) {
+        return ResponseEntity.status(400).body(noResourceFoundException.getMessage());
+    }
+
+
+    @ExceptionHandler(value = JpaSystemException.class)
+    public ResponseEntity JpaSystemException(JpaSystemException noResourceFoundException) {
         return ResponseEntity.status(400).body(noResourceFoundException.getMessage());
     }
 }
